@@ -7,5 +7,14 @@
  * @noflow
  */
 
-import { unmountComponentAtNode } from 'react-dom';
+import { createRoot } from 'react-dom/client';
+
+const unmountComponentAtNode = (container) => {
+  if (!container) return;
+
+  const root = createRoot(container);
+  root.unmount();
+};
+
 export default unmountComponentAtNode;
+
