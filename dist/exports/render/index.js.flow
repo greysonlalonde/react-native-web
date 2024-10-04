@@ -1,0 +1,18 @@
+/**
+ * Copyright (c) Nicolas Gallagher.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ *
+ * @noflow
+ */
+
+import { render as domLegacyRender } from 'react-dom'; // No hydrate here
+import { createRoot as domCreateRoot, hydrateRoot as domHydrateRoot } from 'react-dom/client';
+import unmountComponentAtNode from '../unmountComponentAtNode';
+import { createSheet } from '../StyleSheet/dom';
+
+// Modern hydrate using React 18+ hydrateRoot
+declare export function hydrate(element: any, root: any): any; // Modern render using React 18+ createRoot
+declare export function render(element: any, root: any): any; // Legacy render (for backward compatibility) using react-dom's render
+declare export default function renderLegacy(element: any, root: any, callback: any): any;
