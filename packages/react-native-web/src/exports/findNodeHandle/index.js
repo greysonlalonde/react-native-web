@@ -8,20 +8,24 @@
  * @noflow
  */
 
-import { findDOMNode } from 'react-dom';
-
 /**
- * @deprecated imperatively finding the DOM element of a react component has been deprecated in React 18.
+ * Imperatively finding the DOM element of a react component has been deprecated.
  * You should use ref properties on the component instead.
  */
+
+// For functional components, use useRef.
+import { useRef, useEffect } from 'react';
+
 const findNodeHandle = (component) => {
-  let node;
+  const ref = useRef(null);
 
-  try {
-    node = findDOMNode(component);
-  } catch (e) {}
+  useEffect(() => {
+    if (component && component.current) {
+      ref.current = component.current;
+    }
+  }, [component]);
 
-  return node;
+  return ref.current;
 };
 
 export default findNodeHandle;
