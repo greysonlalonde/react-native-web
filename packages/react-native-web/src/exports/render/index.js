@@ -3,11 +3,8 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
- * @noflow
  */
 
-import { render as domLegacyRender } from 'react-dom'; // No hydrate here
 import {
   createRoot as domCreateRoot,
   hydrateRoot as domHydrateRoot
@@ -30,13 +27,43 @@ export function render(element, root) {
   return reactRoot;
 }
 
-// Legacy render (for backward compatibility) using react-dom's render
+// Legacy render function (for backward compatibility with React 18+)
 export default function renderLegacy(element, root, callback) {
   createSheet(root);
-  domLegacyRender(element, root, callback); // Legacy render (for React < 18)
-  return {
-    unmount: function () {
-      return unmountComponentAtNode(root); // Ensures unmount functionality
+
+  // Check if React 18+ is available by detecting `createRoot`
+  if (domCreateRoot) {
+    // Use the modern React 18+ API
+    const reactRoot = domCreateRoot(root); // Create root with React 18 API
+    reactRoot.render(element); // Render the element using React 18+ API
+
+    if (callback) {
+      callback(); // Ensure callback support, even with React 18+
     }
-  };
+
+    return {
+      unmount: () => reactRoot.unmount(), // Ensure unmount functionality
+    };
+  } else {
+    // Handle legacy React (React 17 and below) dynamically
+    const { render: legacyRender } = require('react-dom'); // Dynamic import for React 17
+    legacyRender(element, root, callback); // Use legacy render for React 17 or below
+    return {
+      unmount: () => unmountComponentAtNode(root), // Ensure unmount functionality
+    };
+  }
+}
+
+// Legacy hydrate function (for backward compatibility with React 18+)
+export function hydrateLegacy(element, root) {
+  createSheet(root);
+
+  if (domHydrateRoot) {
+    // Use the modern React 18+ hydrateRoot API
+    return domHydrateRoot(root, element); // Modern hydrate for React 18+
+  } else {
+    // Handle legacy React (React 17 and below) dynamically
+    const { hydrate: legacyHydrate } = require('react-dom'); // Dynamic import for React 17
+    return legacyHydrate(element, root); // Use legacy hydrate for React 17 or below
+  }
 }

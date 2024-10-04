@@ -45,7 +45,12 @@ const forwardPropsList = Object.assign(
 const pickProps = (props) => pick(props, forwardPropsList);
 
 const View: React.AbstractComponent<ViewProps, HTMLElement & PlatformMethods> =
-  React.forwardRef((props, forwardedRef) => {
+  (
+    {
+      ref: forwardedRef,
+      ...props
+    }
+  ) => {
     const {
       hrefAttrs,
       onLayout,
@@ -78,7 +83,7 @@ const View: React.AbstractComponent<ViewProps, HTMLElement & PlatformMethods> =
       });
     }
 
-    const hasTextAncestor = React.useContext(TextAncestorContext);
+    const hasTextAncestor = React.use(TextAncestorContext);
     const hostRef = React.useRef(null);
     const { direction: contextDirection } = useLocaleContext();
 
@@ -139,7 +144,7 @@ const View: React.AbstractComponent<ViewProps, HTMLElement & PlatformMethods> =
     supportedProps.ref = setRef;
 
     return createElement(component, supportedProps, { writingDirection });
-  });
+  };
 
 View.displayName = 'View';
 
