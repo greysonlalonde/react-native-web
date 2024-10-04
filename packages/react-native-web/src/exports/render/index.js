@@ -7,10 +7,7 @@
  * @noflow
  */
 
-import {
-  hydrate as domLegacyHydrate,
-  render as domLegacyRender
-} from 'react-dom';
+import { render as domLegacyRender } from 'react-dom'; // No hydrate here
 import {
   createRoot as domCreateRoot,
   hydrateRoot as domHydrateRoot
@@ -19,34 +16,27 @@ import {
 import unmountComponentAtNode from '../unmountComponentAtNode';
 import { createSheet } from '../StyleSheet/dom';
 
+// Modern hydrate using React 18+ hydrateRoot
 export function hydrate(element, root) {
   createSheet(root);
-  return domHydrateRoot(root, element);
+  return domHydrateRoot(root, element); // Uses the modern hydrateRoot
 }
 
+// Modern render using React 18+ createRoot
 export function render(element, root) {
   createSheet(root);
-  const reactRoot = domCreateRoot(root);
-  reactRoot.render(element);
+  const reactRoot = domCreateRoot(root); // Uses the modern createRoot
+  reactRoot.render(element); // Render the element
   return reactRoot;
 }
 
-export function hydrateLegacy(element, root, callback) {
-  createSheet(root);
-  domLegacyHydrate(element, root, callback);
-  return {
-    unmount: function () {
-      return unmountComponentAtNode(root);
-    }
-  };
-}
-
+// Legacy render (for backward compatibility) using react-dom's render
 export default function renderLegacy(element, root, callback) {
   createSheet(root);
-  domLegacyRender(element, root, callback);
+  domLegacyRender(element, root, callback); // Legacy render (for React < 18)
   return {
     unmount: function () {
-      return unmountComponentAtNode(root);
+      return unmountComponentAtNode(root); // Ensures unmount functionality
     }
   };
 }
