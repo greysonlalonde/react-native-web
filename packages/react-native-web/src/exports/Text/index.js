@@ -44,12 +44,7 @@ const forwardPropsList = Object.assign(
 const pickProps = (props) => pick(props, forwardPropsList);
 
 const Text: React.AbstractComponent<TextProps, HTMLElement & PlatformMethods> =
-  (
-    {
-      ref: forwardedRef,
-      ...props
-    }
-  ) => {
+  React.forwardRef((props, forwardedRef) => {
     const {
       hrefAttrs,
       numberOfLines,
@@ -83,7 +78,7 @@ const Text: React.AbstractComponent<TextProps, HTMLElement & PlatformMethods> =
       );
     }
 
-    const hasTextAncestor = React.use(TextAncestorContext);
+    const hasTextAncestor = React.useContext(TextAncestorContext);
     const hostRef = React.useRef(null);
     const { direction: contextDirection } = useLocaleContext();
 
@@ -179,11 +174,12 @@ const Text: React.AbstractComponent<TextProps, HTMLElement & PlatformMethods> =
     return hasTextAncestor ? (
       element
     ) : (
-      <TextAncestorContext value={true}>
+      <TextAncestorContext.Provider value={true}>
         {element}
-      </TextAncestorContext>
+      </TextAncestorContext.Provider>
     );
-  };
+  }
+  );
 
 Text.displayName = 'Text';
 

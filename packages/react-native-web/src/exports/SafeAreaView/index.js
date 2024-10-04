@@ -30,15 +30,10 @@ const cssFunction: 'constant' | 'env' = (function () {
 const SafeAreaView: React.AbstractComponent<
   ViewProps,
   React.ElementRef<typeof View>
-> = (
-  {
-    ref,
-    ...props
-  }
-) => {
+> = React.forwardRef((props, ref) => {
   const { style, ...rest } = props;
   return <View {...rest} ref={ref} style={[styles.root, style]} />;
-};
+});
 
 SafeAreaView.displayName = 'SafeAreaView';
 
